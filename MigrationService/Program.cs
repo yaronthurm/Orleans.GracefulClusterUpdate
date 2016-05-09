@@ -1,5 +1,6 @@
 ﻿using Orleans;
 using Orleans.Runtime.Configuration;
+using Silo.Grains;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,9 @@ namespace MigrationService
                 Gateways = new[] { new IPEndPoint(IPAddress.Loopback, gatewayPort) }
             });
 
-
+            var grain = GrainClient.GrainFactory.GetGrain<ICounterGrain>(Guid.NewGuid());
+            grain.Increment().Wait();
+            var x = grain.GetValue().Result;
         }
     }
 }
