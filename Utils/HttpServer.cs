@@ -43,9 +43,9 @@ namespace Utils
         }
 
 
-        protected virtual void ProcessRequestAsync(HttpListenerContext context)
+        protected virtual Task ProcessRequestAsync(HttpListenerContext context)
         {
-
+            return Task.FromResult(0);
         }
     }
 }

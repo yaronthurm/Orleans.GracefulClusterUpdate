@@ -76,6 +76,10 @@
       <Project>{e6219a84-ed73-4a34-9206-1121c193009d}</Project>
       <Name>Silo.Grains</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Utils\Utils.csproj">
+      <Project>{5dc7b7c7-e358-4684-9469-0fc98b6f6771}</Project>
+      <Name>Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

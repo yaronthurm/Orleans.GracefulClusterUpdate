@@ -7,8 +7,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Silo.Grains;
+using Utils;
 
-namespace SiloV1
+namespace SiloV2
 {
     class Program
     {
@@ -29,12 +31,15 @@ namespace SiloV1
                 Gateways = new[] { new IPEndPoint(IPAddress.Loopback, 27600) }
             });
 
+            var server = new Server();
+            server.Start();
 
             Console.WriteLine("Orleans Silo is running.\nPress Enter to terminate...");
             Console.ReadLine();
 
             // We do a clean shutdown in the other AppDomain
             hostDomain.DoCallBack(ShutdownSilo);
+            server.Stop();
         }
 
         static void InitSilo(string[] args)
@@ -60,5 +65,22 @@ namespace SiloV1
             }
         }
 
+    }
+
+
+
+    public class Server: HttpServer
+    {
+        public Server(): base("localhost", 50200, "SiloV2") { }
+
+        protected override async Task ProcessRequestAsync(HttpListenerContext context)
+        {
+            switch (context.Request.RawUrl)
+            {
+                case "/SiloV2/Increment":
+                    await GrainClient.GrainFactory.GetGrain<ICounterGrain>(Guid.NewGuid()).Increment();
+                    break;
+            }
+        }
     }
 }
