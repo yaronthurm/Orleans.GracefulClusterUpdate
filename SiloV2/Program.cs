@@ -1,4 +1,6 @@
-﻿using Orleans.Runtime.Host;
+﻿using Orleans;
+using Orleans.Runtime.Configuration;
+using Orleans.Runtime.Host;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +23,12 @@ namespace SiloV1
                 {
                     AppDomainInitializer = InitSilo
                 });
+
+            GrainClient.Initialize(new ClientConfiguration
+            {                 
+                Gateways = new[] { new IPEndPoint(IPAddress.Loopback, 27600) }
+            });
+
 
             Console.WriteLine("Orleans Silo is running.\nPress Enter to terminate...");
             Console.ReadLine();
