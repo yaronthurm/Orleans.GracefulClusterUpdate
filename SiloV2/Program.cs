@@ -73,14 +73,31 @@ namespace SiloV2
     {
         public Server(): base("localhost", 50200, "SiloV2") { }
 
-        protected override async Task ProcessRequestAsync(HttpListenerContext context)
+        protected override async Task<HttpResponse> ProcessRequestAsync(HttpListenerContext context)
         {
-            switch (context.Request.RawUrl)
+            // Expected "/SiloV2/<method>/<id>"
+            var path = context.Request.RawUrl.Split(new[] { "/" } , StringSplitOptions.RemoveEmptyEntries);
+            if (path.Length != 3)
+                return new HttpResponse { StatusCode = HttpStatusCode.BadRequest, Body = "Invalid url format. Expected /SiloV2/<method>/<id>" };
+
+            var grain = GrainClient.GrainFactory.GetGrain<ICounterGrain>(path[2]);
+            switch (path[1])
             {
-                case "/SiloV2/Increment":
-                    await GrainClient.GrainFactory.GetGrain<ICounterGrain>(Guid.NewGuid()).Increment();
-                    break;
-            }
+                case "Increment":
+                    await grain.Increment();
+                    return new HttpResponse { StatusCode = HttpStatusCode.OK, Body = "" };
+
+                case "GetValue":
+                    var val = await grain.GetValue();
+                    return new HttpResponse { StatusCode = HttpStatusCode.OK, Body = val.ToString() };
+
+                case "Deactivate":
+                    await grain.Deactivate();
+                    return new HttpResponse { StatusCode = HttpStatusCode.OK, Body = "" };
+
+
+                default: return new HttpResponse { StatusCode = HttpStatusCode.BadRequest, Body = "Invalid method" };
+            }            
         }
     }
 }

@@ -22,7 +22,7 @@ namespace MigrationService
                 Gateways = new[] { new IPEndPoint(IPAddress.Loopback, gatewayPort) }
             });
 
-            var grain = GrainClient.GrainFactory.GetGrain<ICounterGrain>(Guid.NewGuid());
+            var grain = GrainClient.GrainFactory.GetGrain<ICounterGrain>("1");
             grain.Increment().Wait();
             var x = grain.GetValue().Result;
         }

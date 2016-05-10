@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Silo.Grains
 {
-    public interface ICounterGrain : IGrainWithGuidKey
+    public interface ICounterGrain : IGrainWithStringKey
     {
         Task Increment();
         Task<int> GetValue();

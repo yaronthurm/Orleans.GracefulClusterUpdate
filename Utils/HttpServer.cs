@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -37,16 +38,36 @@ namespace Utils
             _listener.Stop();
         }
 
-        private void ProcessRequestAsyncInner(HttpListenerContext context)
+        private async void ProcessRequestAsyncInner(HttpListenerContext context)
         {
-            ProcessRequestAsync(context);
+            HttpResponse res = null;
+            try {
+                res = await ProcessRequestAsync(context);
+            }
+            catch (Exception ex)
+            {
+                res = new HttpResponse { StatusCode = HttpStatusCode.InternalServerError, Body = ex.ToString() };
+            }
+
+            var body = Encoding.UTF8.GetBytes(res.Body);
+            context.Response.StatusCode = (int)res.StatusCode;
+            context.Response.ContentLength64 = body.Length;
+            using (Stream s = context.Response.OutputStream)
+                await s.WriteAsync(body, 0, body.Length);
         }
 
 
-        protected virtual Task ProcessRequestAsync(HttpListenerContext context)
+        protected virtual Task<HttpResponse> ProcessRequestAsync(HttpListenerContext context)
         {
-            return Task.FromResult(0);
+            throw new NotImplementedException();
         }
+    }
+
+
+    public class HttpResponse
+    {
+        public string Body;
+        public HttpStatusCode StatusCode;
     }
 }
 

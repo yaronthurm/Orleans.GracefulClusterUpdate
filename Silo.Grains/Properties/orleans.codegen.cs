@@ -42,7 +42,7 @@ namespace Silo.Grains
 
         public override global::System.Boolean @IsCompatible(global::System.Int32 @interfaceId)
         {
-            return @interfaceId == 1908996515;
+            return @interfaceId == 1908996515 || @interfaceId == -1277021679;
         }
 
         protected override global::System.String @GetMethodName(global::System.Int32 @interfaceId, global::System.Int32 @methodId)
@@ -60,6 +60,13 @@ namespace Silo.Grains
                             return "Deactivate";
                         default:
                             throw new global::System.NotImplementedException("interfaceId=" + 1908996515 + ",methodId=" + @methodId);
+                    }
+
+                case -1277021679:
+                    switch (@methodId)
+                    {
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + @methodId);
                     }
 
                 default:
@@ -108,6 +115,13 @@ namespace Silo.Grains
                                 return ((global::Silo.Grains.ICounterGrain)@grain).@Deactivate().@Box();
                             default:
                                 throw new global::System.NotImplementedException("interfaceId=" + 1908996515 + ",methodId=" + methodId);
+                        }
+
+                    case -1277021679:
+                        switch (methodId)
+                        {
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + methodId);
                         }
 
                     default:
