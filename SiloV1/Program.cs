@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Silo.Grains;
 using Utils;
 
-namespace SiloV2
+namespace SiloV1
 {
     class Program
     {

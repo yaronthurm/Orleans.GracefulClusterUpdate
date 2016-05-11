@@ -25,7 +25,7 @@ namespace Utils
             if (storageRes.StatusCode == HttpStatusCode.OK)
                 return new FindResult { Found = true, Body = await storageRes.Content.ReadAsStringAsync() };
 
-            if (storageRes.StatusCode == HttpStatusCode.NotFound)
+            if (storageRes.StatusCode == HttpStatusCode.NoContent)
                 return new FindResult { Found = false, Body = null };
 
             throw new ApplicationException("Could not find item");

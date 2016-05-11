@@ -50,7 +50,7 @@ namespace StorageService
                     if (Data.TryGetValue(path[2], out val))
                         return new HttpResponse { StatusCode = HttpStatusCode.OK, Body = val.ToString() };
                     else
-                        return new HttpResponse { StatusCode = HttpStatusCode.NotFound, Body = "" };
+                        return new HttpResponse { StatusCode = HttpStatusCode.NoContent, Body = "" };
 
                 default: return new HttpResponse { StatusCode = HttpStatusCode.BadRequest, Body = "Invalid method" };
             }
