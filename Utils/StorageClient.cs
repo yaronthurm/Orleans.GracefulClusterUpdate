@@ -40,6 +40,13 @@ namespace Utils
 
             throw new ApplicationException("Failed to save item");
         }
+
+
+        public class FindResult
+        {
+            public bool Found;
+            public string Body;       
+        }
     }
 }
 

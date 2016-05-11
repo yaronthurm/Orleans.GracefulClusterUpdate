@@ -25,6 +25,7 @@ namespace Silo.Grains
     public class CounterGrain : Grain, ICounterGrain
     {
         private StorageClient _storageClient = new StorageClient("localhost", 50200);
+        private MigrationServiceClient _migrationServiceClient = new MigrationServiceClient("localhost", 50200);
         private int _currentValue;
 
         public override async Task OnActivateAsync()
@@ -54,22 +55,13 @@ namespace Silo.Grains
 
         private async Task EnsureMigrated()
         {
-            string grainKey = this.GetPrimaryKeyString();
-            var httpClient = new HttpClient();
-            var res = await httpClient.GetAsync($"http://localhost:50200/Migration/EnsureMigrated/{grainKey}");
-            if (res.StatusCode != System.Net.HttpStatusCode.OK)
-                throw new ApplicationException("Failed to migrate grain");
+            await _migrationServiceClient.EnsureMigrated(this.GetPrimaryKeyString());
         }
 
         private async Task<bool> IsMigrated()
         {
-            string grainKey = this.GetPrimaryKeyString();
-            var httpClient = new HttpClient();
-            var res = await httpClient.GetAsync($"http://localhost:50200/Migration/IsMigrated/{grainKey}");
-            if (res.StatusCode != System.Net.HttpStatusCode.OK)
-                throw new ApplicationException("Failed to validate grain migration status");
-            var body = await res.Content.ReadAsStringAsync();
-            return bool.Parse(body);
+            var ret = await _migrationServiceClient.IsMigrated(this.GetPrimaryKeyString());
+            return ret;
         }
 
         public async Task Increment()
