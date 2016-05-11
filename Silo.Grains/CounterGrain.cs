@@ -24,14 +24,14 @@ namespace Silo.Grains
 
     public class CounterGrain : Grain, ICounterGrain
     {
-        private HttpClientWrapper _storageClient = new HttpClientWrapper("localhost", 50200, "Storage");
+        private StorageClient _storageClient = new StorageClient("localhost", 50200);
         private int _currentValue;
 
         public override async Task OnActivateAsync()
         {
             await HandleMigrationLogicIfNeeded();
 
-            var storageRes = await _storageClient.FindResourceAsync($"Get/Counters_{this.GetPrimaryKeyString()}");
+            var storageRes = await _storageClient.FindAsync("Counters", this.GetPrimaryKeyString());
             if (storageRes.Found) _currentValue = int.Parse(storageRes.Body);
 
             await base.OnActivateAsync();
@@ -75,7 +75,7 @@ namespace Silo.Grains
         public async Task Increment()
         {
             _currentValue++;
-            await _storageClient.FindResourceAsync($"Save/Counters_{this.GetPrimaryKeyString()}/{_currentValue}");
+            await _storageClient.SaveAsync("Counters", this.GetPrimaryKeyString(), _currentValue.ToString());
         }
 
         public Task<int> GetValue()
