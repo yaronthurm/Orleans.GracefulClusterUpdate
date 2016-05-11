@@ -19,6 +19,9 @@ namespace SiloV2
 
         static void Main(string[] args)
         {
+            GlobalMigrationConfig.IsMigrationOn = true;
+            GlobalMigrationConfig.IsOldCluster = false;
+
             // Orleans should run in its own AppDomain, we set it up like this
             AppDomain hostDomain = AppDomain.CreateDomain("OrleansHost", null,
                 new AppDomainSetup()
@@ -44,6 +47,9 @@ namespace SiloV2
 
         static void InitSilo(string[] args)
         {
+            GlobalMigrationConfig.IsMigrationOn = true;
+            GlobalMigrationConfig.IsOldCluster = false;
+
             siloHost = new SiloHost(System.Net.Dns.GetHostName());
             // The Cluster config is quirky and weird to configure in code, so we're going to use a config file
             siloHost.ConfigFileName = "OrleansConfiguration.xml";

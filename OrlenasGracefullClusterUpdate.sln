@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Silo.Grains", "Silo.Grains\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{5DC7B7C7-E358-4684-9469-0FC98B6F6771}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageService", "StorageService\StorageService.csproj", "{1283C0D6-0B99-4BDD-8B19-AD178D1945E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{5DC7B7C7-E358-4684-9469-0FC98B6F6771}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DC7B7C7-E358-4684-9469-0FC98B6F6771}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DC7B7C7-E358-4684-9469-0FC98B6F6771}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1283C0D6-0B99-4BDD-8B19-AD178D1945E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1283C0D6-0B99-4BDD-8B19-AD178D1945E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1283C0D6-0B99-4BDD-8B19-AD178D1945E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1283C0D6-0B99-4BDD-8B19-AD178D1945E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

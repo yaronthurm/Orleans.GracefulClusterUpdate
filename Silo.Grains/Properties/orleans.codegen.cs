@@ -13,6 +13,127 @@ namespace Silo.Grains
     using global::Orleans.Async;
     using global::Orleans;
 
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.2.0.0"), global::System.SerializableAttribute, global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute, global::Orleans.CodeGeneration.GrainReferenceAttribute(typeof (global::Silo.Grains.IMigrationGrain))]
+    internal class OrleansCodeGenMigrationGrainReference : global::Orleans.Runtime.GrainReference, global::Silo.Grains.IMigrationGrain
+    {
+        protected @OrleansCodeGenMigrationGrainReference(global::Orleans.Runtime.GrainReference @other): base (@other)
+        {
+        }
+
+        protected @OrleansCodeGenMigrationGrainReference(global::System.Runtime.Serialization.SerializationInfo @info, global::System.Runtime.Serialization.StreamingContext @context): base (@info, @context)
+        {
+        }
+
+        protected override global::System.Int32 InterfaceId
+        {
+            get
+            {
+                return -988359979;
+            }
+        }
+
+        public override global::System.String InterfaceName
+        {
+            get
+            {
+                return "global::Silo.Grains.IMigrationGrain";
+            }
+        }
+
+        public override global::System.Boolean @IsCompatible(global::System.Int32 @interfaceId)
+        {
+            return @interfaceId == -988359979 || @interfaceId == -1277021679;
+        }
+
+        protected override global::System.String @GetMethodName(global::System.Int32 @interfaceId, global::System.Int32 @methodId)
+        {
+            switch (@interfaceId)
+            {
+                case -988359979:
+                    switch (@methodId)
+                    {
+                        case -988429037:
+                            return "IsMigrated";
+                        case -1363941008:
+                            return "EnsureMigrated";
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -988359979 + ",methodId=" + @methodId);
+                    }
+
+                case -1277021679:
+                    switch (@methodId)
+                    {
+                        default:
+                            throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + @methodId);
+                    }
+
+                default:
+                    throw new global::System.NotImplementedException("interfaceId=" + @interfaceId);
+            }
+        }
+
+        public global::System.Threading.Tasks.Task<global::System.Boolean> @IsMigrated()
+        {
+            return base.@InvokeMethodAsync<global::System.Boolean>(-988429037, null);
+        }
+
+        public global::System.Threading.Tasks.Task @EnsureMigrated()
+        {
+            return base.@InvokeMethodAsync<global::System.Object>(-1363941008, null);
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.2.0.0"), global::Orleans.CodeGeneration.MethodInvokerAttribute("global::Silo.Grains.IMigrationGrain", -988359979, typeof (global::Silo.Grains.IMigrationGrain)), global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute]
+    internal class OrleansCodeGenMigrationGrainMethodInvoker : global::Orleans.CodeGeneration.IGrainMethodInvoker
+    {
+        public global::System.Threading.Tasks.Task<global::System.Object> @Invoke(global::Orleans.Runtime.IAddressable @grain, global::Orleans.CodeGeneration.InvokeMethodRequest @request)
+        {
+            global::System.Int32 interfaceId = @request.@InterfaceId;
+            global::System.Int32 methodId = @request.@MethodId;
+            global::System.Object[] arguments = @request.@Arguments;
+            try
+            {
+                if (@grain == null)
+                    throw new global::System.ArgumentNullException("grain");
+                switch (interfaceId)
+                {
+                    case -988359979:
+                        switch (methodId)
+                        {
+                            case -988429037:
+                                return ((global::Silo.Grains.IMigrationGrain)@grain).@IsMigrated().@Box();
+                            case -1363941008:
+                                return ((global::Silo.Grains.IMigrationGrain)@grain).@EnsureMigrated().@Box();
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -988359979 + ",methodId=" + methodId);
+                        }
+
+                    case -1277021679:
+                        switch (methodId)
+                        {
+                            default:
+                                throw new global::System.NotImplementedException("interfaceId=" + -1277021679 + ",methodId=" + methodId);
+                        }
+
+                    default:
+                        throw new global::System.NotImplementedException("interfaceId=" + interfaceId);
+                }
+            }
+            catch (global::System.Exception exception)
+            {
+                return global::Orleans.Async.TaskUtility.@Faulted(exception);
+            }
+        }
+
+        public global::System.Int32 InterfaceId
+        {
+            get
+            {
+                return -988359979;
+            }
+        }
+    }
+
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Orleans-CodeGenerator", "1.2.0.0"), global::System.SerializableAttribute, global::System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute, global::Orleans.CodeGeneration.GrainReferenceAttribute(typeof (global::Silo.Grains.ICounterGrain))]
     internal class OrleansCodeGenCounterGrainReference : global::Orleans.Runtime.GrainReference, global::Silo.Grains.ICounterGrain
     {
