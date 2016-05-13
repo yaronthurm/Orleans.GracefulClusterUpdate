@@ -32,7 +32,7 @@ namespace StorageService
         {
             // Expected "/Storage/Save/<id>/<value>"  or
             //          "/Storage/Get/<id>
-
+            Console.WriteLine(context.Request.RawUrl);
             var path = context.Request.RawUrl.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
             if (path.Length < 2) return new HttpResponse { StatusCode = HttpStatusCode.BadRequest, Body = "Invalid url format" };
 

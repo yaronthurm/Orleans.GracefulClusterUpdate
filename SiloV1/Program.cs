@@ -19,17 +19,14 @@ namespace SiloV1
 
         static void Main(string[] args)
         {
-            // Orleans should run in its own AppDomain, we set it up like this
-            AppDomain hostDomain = AppDomain.CreateDomain("OrleansHost", null,
-                new AppDomainSetup()
-                {
-                    AppDomainInitializer = InitSilo
-                });
-
-            GrainClient.Initialize(new ClientConfiguration
+            var silo = new OrleansHost(() =>
             {
-                Gateways = new[] { new IPEndPoint(IPAddress.Loopback, 27500) }
+                GlobalMigrationConfig.IsMigrationOn = true;
+                GlobalMigrationConfig.IsOldCluster = true;
             });
+            silo.Run(args);
+
+            GrainClient.Initialize(new ClientConfiguration { Gateways = new[] { new IPEndPoint(IPAddress.Loopback, 27500) } });
 
             var server = new Server();
             server.Start();
@@ -37,37 +34,9 @@ namespace SiloV1
             Console.WriteLine("Orleans Silo is running.\nPress Enter to terminate...");
             Console.ReadLine();
 
-            // We do a clean shutdown in the other AppDomain
-            hostDomain.DoCallBack(ShutdownSilo);
+            silo.Stop();
             server.Stop();
         }
-
-        static void InitSilo(string[] args)
-        {
-            GlobalMigrationConfig.IsMigrationOn = true;
-            GlobalMigrationConfig.IsOldCluster = true;
-
-            siloHost = new SiloHost(System.Net.Dns.GetHostName());
-            // The Cluster config is quirky and weird to configure in code, so we're going to use a config file
-            siloHost.ConfigFileName = "OrleansConfiguration.xml";
-
-            siloHost.InitializeOrleansSilo();
-            var startedok = siloHost.StartOrleansSilo();
-            if (!startedok)
-                throw new SystemException(String.Format("Failed to start Orleans silo '{0}' as a {1} node", siloHost.Name, siloHost.Type));
-
-        }
-
-        static void ShutdownSilo()
-        {
-            if (siloHost != null)
-            {
-                siloHost.Dispose();
-                GC.SuppressFinalize(siloHost);
-                siloHost = null;
-            }
-        }
-
     }
 
 

@@ -14,25 +14,16 @@ namespace SiloV2
 {
     class Program
     {
-
-        static SiloHost siloHost;
-
         static void Main(string[] args)
         {
-            GlobalMigrationConfig.IsMigrationOn = true;
-            GlobalMigrationConfig.IsOldCluster = false;
-
-            // Orleans should run in its own AppDomain, we set it up like this
-            AppDomain hostDomain = AppDomain.CreateDomain("OrleansHost", null,
-                new AppDomainSetup()
-                {
-                    AppDomainInitializer = InitSilo
-                });
-
-            GrainClient.Initialize(new ClientConfiguration
-            {                 
-                Gateways = new[] { new IPEndPoint(IPAddress.Loopback, 27600) }
+            var silo = new OrleansHost(() =>
+            {
+                GlobalMigrationConfig.IsMigrationOn = true;
+                GlobalMigrationConfig.IsOldCluster = false;
             });
+            silo.Run(args);
+
+            GrainClient.Initialize(new ClientConfiguration { Gateways = new[] { new IPEndPoint(IPAddress.Loopback, 27600) } });
 
             var server = new Server();
             server.Start();
@@ -40,49 +31,21 @@ namespace SiloV2
             Console.WriteLine("Orleans Silo is running.\nPress Enter to terminate...");
             Console.ReadLine();
 
-            // We do a clean shutdown in the other AppDomain
-            hostDomain.DoCallBack(ShutdownSilo);
+            silo.Stop();
             server.Stop();
         }
-
-        static void InitSilo(string[] args)
-        {
-            GlobalMigrationConfig.IsMigrationOn = true;
-            GlobalMigrationConfig.IsOldCluster = false;
-
-            siloHost = new SiloHost(System.Net.Dns.GetHostName());
-            // The Cluster config is quirky and weird to configure in code, so we're going to use a config file
-            siloHost.ConfigFileName = "OrleansConfiguration.xml";
-
-            siloHost.InitializeOrleansSilo();
-            var startedok = siloHost.StartOrleansSilo();
-            if (!startedok)
-                throw new SystemException(String.Format("Failed to start Orleans silo '{0}' as a {1} node", siloHost.Name, siloHost.Type));
-
-        }
-
-        static void ShutdownSilo()
-        {
-            if (siloHost != null)
-            {
-                siloHost.Dispose();
-                GC.SuppressFinalize(siloHost);
-                siloHost = null;
-            }
-        }
-
     }
 
 
 
-    public class Server: HttpServer
+    public class Server : HttpServer
     {
-        public Server(): base("localhost", 50200, "SiloV2") { }
+        public Server() : base("localhost", 50200, "SiloV2") { }
 
         protected override async Task<HttpResponse> ProcessRequestAsync(HttpListenerContext context)
         {
             // Expected "/SiloV2/<method>/<id>"
-            var path = context.Request.RawUrl.Split(new[] { "/" } , StringSplitOptions.RemoveEmptyEntries);
+            var path = context.Request.RawUrl.Split(new[] { "/" }, StringSplitOptions.RemoveEmptyEntries);
             if (path.Length != 3)
                 return new HttpResponse { StatusCode = HttpStatusCode.BadRequest, Body = "Invalid url format. Expected /SiloV2/<method>/<id>" };
 
@@ -103,7 +66,7 @@ namespace SiloV2
 
 
                 default: return new HttpResponse { StatusCode = HttpStatusCode.BadRequest, Body = "Invalid method" };
-            }            
+            }
         }
     }
 }
