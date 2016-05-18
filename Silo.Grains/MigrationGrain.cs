@@ -46,7 +46,7 @@ namespace Silo.Grains
             var httpClient = new HttpClient();
             await httpClient.GetStringAsync($"http://localhost:50200/SiloV1/Deactivate/{this.GetPrimaryKeyString()}");
             _isMigrated = true;
-            await _storageClient.SaveAsync("Migration", this.GetPrimaryKeyString(), "");
+            await _storageClient.SaveAsync("Migration", this.GetPrimaryKeyString(), "1");
         }
     }
 }

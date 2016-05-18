@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
+using Orleans.CodeGeneration;
+using System.Reflection;
 
 namespace Silo.Grains
 {
@@ -22,20 +24,39 @@ namespace Silo.Grains
         Task Deactivate();
     }
 
-    public class CounterGrain : Grain, ICounterGrain
+    public class CounterGrain : Grain, ICounterGrain, IGrainInvokeInterceptor
     {
         private StorageClient _storageClient = new StorageClient("localhost", 50200);
         private MigrationServiceClient _migrationServiceClient = new MigrationServiceClient("localhost", 50200);
         private int _currentValue;
+        private bool _isFirstActivation = true;
 
-        public override async Task OnActivateAsync()
+        public async Task<object> Invoke(MethodInfo method, InvokeMethodRequest request, IGrainMethodInvoker invoker)
         {
-            await HandleMigrationLogicIfNeeded();
+            if (_isFirstActivation)
+            {
+                if (!IsDeactivating(method))
+                {
+                    await HandleMigrationLogicIfNeeded();
+                    await Initialize();
+                }
+                _isFirstActivation = false;
+            }
 
+            var ret = await invoker.Invoke(this, request);
+            return ret;
+        }
+
+        private async Task Initialize()
+        {
             var storageRes = await _storageClient.FindAsync("Counters", this.GetPrimaryKeyString());
             if (storageRes.Found) _currentValue = int.Parse(storageRes.Body);
+        }
 
-            await base.OnActivateAsync();
+        private bool IsDeactivating(MethodInfo method)
+        {
+            var ret = method.Name == ((Func<Task>)this.Deactivate).Method.Name;
+            return ret;
         }
 
         private async Task HandleMigrationLogicIfNeeded()
